@@ -15,6 +15,7 @@
 % https://in-the-sky.org/spacecraft.php?id=37809
 
 clear,clc
+%% FIRST PART OF THE CODE
 apLocations = table2array(readtable("apLocations.csv"));    % Upload AP data from census track spreadsheet
 % Form a satellite scenario with satcom toolbox.
 startTime  = datetime(2024,6,4,14,27,0,TimeZone="America/New_York");
