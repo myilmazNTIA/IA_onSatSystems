@@ -267,7 +267,6 @@ loss_bel = 10*log10(10^(0.1*A_P)+10^(0.1*B_P)+10^(0.1*C));
 end
 
 %% ITU-R P.676 Implementation
-% Code was downloaded from https://github.com/NTIA/propagation/wiki/P676 - 10/3/2024
 % Atmospheric loss as defined in ITU P.676
 % This code allows the user to select from any of the six reference 
 % atmospheres defined in Recommendation ITU-R P.835 (Reference standard atmospheres).
