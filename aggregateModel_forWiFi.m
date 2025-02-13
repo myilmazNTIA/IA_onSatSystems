@@ -78,7 +78,7 @@ all_eirps = 10*log10([eirps_data_indoor eirps_beacon_indoor eirps_data_outdoor e
 numAP_all = length(all_eirps);                    % Total number of indoor and outdoor APs selected 
 monteC    = 1000;                                 % Number of Monte Carlo iterations for CL and BEL
 iStart    = tic;
-I_aggregate = zeros(100,monteC);
+I_aggregate = zeros(10,monteC);
 for i = 1:10
     rng("shuffle")
     selectAPs = randi([1 size(allAPs,1)],1,numAP_all);% Randomly select 'numAP_all' number of indoor and outdoor APs    
