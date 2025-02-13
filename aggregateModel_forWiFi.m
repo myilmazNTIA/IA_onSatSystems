@@ -89,7 +89,7 @@ for i = 1:10
         loss_a   = p676_AL(f_GHz,hGS(selectAPs(ue)),hS,beta1(selectAPs(ue)));
         loss_fs  = 10*log10((4*pi*allAPs(selectAPs(ue),2)/lambda)^2);
         prct     = rand(1,monteC)*100;                % Percentage of locations [%]
-        prob     = rand(1,monteC)*100;                % Probability that loss is not exceeded
+        prob     = 98*rand(1,monteC)+1;               % Probability that loss is not exceeded
         loss_bel = zeros(1,monteC);
         loss_cl  = zeros(1,monteC);
         if ue < length([eirps_data_indoor eirps_beacon_indoor])+1
