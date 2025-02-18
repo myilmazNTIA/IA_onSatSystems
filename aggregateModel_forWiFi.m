@@ -61,7 +61,7 @@ fprintf('Total Elapsed Time: %d\n',allToc)
 % load("er_APtoSat.mat")                          % Once this data is saved above, the first part of the code can be commented out.
 f_GHz   = 8.140;                                  % Center frequency [GHz] - Based on Roy's answer via email
 rx_antG = 26.1;                                   % Satellite antenna gain [dB] - [Slide 28]
-hGS     = randi([3 9],1,size(allAPs,1))/1e3;      % Ground terminal height [km]
+hGS     = 1.5*ones(1,size(allAPs,1))/1e3;         % Ground terminal height [km]
 hS      = 100;                                    % Top of atmosphere [km]
 beta1   = (pi/180)*allAPs(:,1);                   % Elevation angle referenced to zenith [radian]
 lambda  = physconst('LightSpeed')/(f_GHz*1e9);    % Wavelength [m]
