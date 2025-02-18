@@ -139,7 +139,6 @@ xlabel('INR (dB)'), ylabel('CDF'),grid on,ylim([0,1])
 % Cable Labs assumption that 47M UEs are distributed in CONUS.
 
 function [allEirps_data,allEirps_beacon] = ueSelection(numUE,satBands_MHz,psdLimit)
-satBW_MHz         = length(satBands_MHz)-1;                     % BW of satellite
 cbw               = [20,40,80,160,320];                         % Channel bandwidth - [Slide 17]
 num_bands         = [63 32 16 8 4];                             % Number of bands for each CBW - [Slide 27]
 cbw_percentage    = [.1 .1 .3 .3 .2];                           % The percentage of each CBW usage - [Slide 19]
@@ -158,14 +157,9 @@ end
 eirp_percentage   = [.01 .12 .06 .19 .54 .08];                  % The percentage of usage of max EIRP values - [Slide 17]
 numUE_perEirpDtemp= round(numUE_perData'.*eirp_percentage);     % Number of UE for each EIRP percentage transmitting data 
 numUE_perEirpBeac = round(numUE_perBeacon'.*eirp_percentage);   % Number of UE for each EIRP percentage transmitting beacon
-maxEirp_beacon    = 10^((psdLimit + 10*log10(20))/10);          % Max EIRP of beacon signal. PSD is from [Slide 25]
-if satBW_MHz < 20
-    maxEirp_beacon= 10^((psdLimit + 10*log10(20) - 10*log10(20/satBW_MHz))/10);
-end
-% Adjust beacon EIRPs based on the bandwidth of beacon [20 MHz fixed]
-eirp_values_upd = eirp_values;
-eirp_values_upd(eirp_values_upd > maxEirp_beacon) = maxEirp_beacon;
-eirp_table_beacon = eirp_values_upd;
+% Max EIRP of beacon signal. PSD is from [Slide 25]
+beaconBands       = 8125:8145;
+eirp_table_beacon = maxEirp(eirp_values,beaconBands,satBands_MHz,psdLimit);
 eirp_table_beacon = repmat(eirp_table_beacon,size(numUE_perEirpBeac,1),1);
 % Adjust data EIRPs based on CBWs and satellite BW
 eirp_table_data   = [];
@@ -173,9 +167,7 @@ numUE_perEirpData = [];
 for i = 1:length(cbw)
     bands = ueBands(cbw(i));
     for b = 1:size(bands,1)
-        maxEirp_data = maxEirp(bands(b,:),satBands_MHz,psdLimit);
-        eirp_values_upd = eirp_values;
-        eirp_values_upd(eirp_values_upd > maxEirp_data) = maxEirp_data;
+        eirp_values_upd = maxEirp(eirp_values,bands(b,:),satBands_MHz,psdLimit);
         eirp_table_data = [eirp_table_data;eirp_values_upd];
         numUE_perEirpData = [numUE_perEirpData;numUE_perEirpDtemp(i,:)]; % Increase the number of UEs by the number of overlapping bands with satellite bands
     end
@@ -197,11 +189,11 @@ end
 end
 
 %% Calculate max EIRP for data and beacon signals
-function maxEirp_data = maxEirp(bands,satBands_MHz,psdLimit)
-for i = 1:size(bands,1)
-    overlap_bw = length(intersect(satBands_MHz,bands(i,:)))-1;      % Find overlapping portion of UE bands with satellite bands
-    maxEirp_data = 10^((psdLimit + 10*log10(overlap_bw))/10);
-end
+function maxEirp_values = maxEirp(eirp_values,bands,satBands_MHz,psdLimit)
+findPSD = 10*log10(eirp_values) - 10*log10(length(bands)-1);
+findPSD(findPSD > psdLimit) = psdLimit;
+overlap_bw = length(intersect(satBands_MHz,bands))-1;      % Find overlapping portion of UE bands with satellite bands
+maxEirp_values = 10.^((findPSD + 10*log10(overlap_bw))/10);
 end
 %% UE bands overlapping with satellite bands
 function bands = ueBands(cbw)
