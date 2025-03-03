@@ -149,6 +149,10 @@ numUE_perCbw      = round(numUE*cbw_percentage);                % # of UE in eac
 numUE_perBand     = round(numUE_perCbw./num_bands);             % # of UE per band in each CBW case
 numUE_perData     = round(numUE_perBand.*data_percentage);      % # of UE transmitting data per CBW
 numUE_perBeacon   = round(numUE_perBand.*beacon_percentage);    % # of UE transmitting beacon per CBW
+% Since two and four beacons are overlapping in 160 and 320 MHz CBw
+% respectively and only one beacon is assumed to overlap with sat bands,
+% the number of UEs transmitting beacon is reduced for these two CBWs.
+numUE_perBeacon(end-1:end) = round([numUE_perBeacon(end-1)/2 numUE_perBeacon(end)/4]);
 %% Assign EIRPs
 eirp_values       = [1000 250 100 50 13 1];                     % Max EIRP values [mW]- [Slide 17]
 if psdLimit == 23                                               % Increase EIRP values by 6dB if UEs are outdoor - [Slide 25]
