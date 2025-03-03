@@ -156,7 +156,7 @@ numUE_perBeacon(end-1:end) = round([numUE_perBeacon(end-1)/2 numUE_perBeacon(end
 %% Assign EIRPs
 eirp_values       = [1000 250 100 50 13 1];                     % Max EIRP values [mW]- [Slide 17]
 if psdLimit == 23                                               % Increase EIRP values by 6dB if UEs are outdoor - [Slide 25]
-    eirp_values   = 10.^((10*log10([1000 250 100 50 13 1])+6)/10);
+    eirp_values   = 10.^((10*log10(eirp_values)+6)/10);
 end
 eirp_percentage   = [.01 .12 .06 .19 .54 .08];                  % The percentage of usage of max EIRP values - [Slide 17]
 numUE_perEirpDtemp= round(numUE_perData'.*eirp_percentage);     % Number of UE for each EIRP percentage transmitting data 
